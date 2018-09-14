@@ -5,21 +5,28 @@ from mutagen.mp3 import MP3
 from appJar import gui
 import re
 
+audio = None
 
-def test(fpath):
-	audio = MP3(fpath,ID3=EasyID3)
+def test(fpath):#debug
 	print(audio.pprint())
 
 def save(btn):
-    print(btn)
+	input = app.getAllEntries()
+	print(input)
+	if audio is not None:
+		if input.get("skladba","") != "":
+			audio["title"] = input.get("skladba","")
+		audio.save()
 	
 def load(btn):
+	global audio
 	path = app.getEntry("f1")
 	if path != "":
 		filename = re.search('^.*[/](.+$)',path).group(1) #regex returns the filename
-		app.setLabel("l8",filename)
+		app.setLabel("l8",filename) #set the filename to the label that should display it
 		print("Loaded: " + str(path))
-		test(path)
+		audio = MP3(path,ID3=EasyID3)
+		test(path) #debug
 		
 		
 		
