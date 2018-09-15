@@ -16,6 +16,20 @@ def save(btn):
 	if audio is not None:
 		if input.get("skladba","") != "":
 			audio["title"] = input.get("skladba","")
+		if input.get("album","") != "":
+			audio["album"] = input.get("album","")
+		if input.get("interpret","") != "":
+			audio["artist"] = input.get("interpret","")
+		if input.get("rok","") != "":#cekovat jestli jsou to 4 cisla
+			audio["date"] = input.get("rok","")
+		if input.get("zanr","") != "":
+			audio["genre"] = input.get("zanr","")
+		if input.get("stopa","") != "":
+			audio["tracknumber"] = input.get("stopa","")	
+		
+		
+		
+		
 		audio.save()
 	
 def load(btn):
@@ -23,7 +37,7 @@ def load(btn):
 	path = app.getEntry("f1")
 	if path != "":
 		filename = re.search('^.*[/](.+$)',path).group(1) #regex returns the filename
-		app.setLabel("l8",filename) #set the filename to the label that should display it
+		app.setLabel("labelDisplay",filename) #set the filename to the label that should display it
 		print("Loaded: " + str(path))
 		audio = MP3(path,ID3=EasyID3)
 		test(path) #debug
@@ -52,8 +66,10 @@ app.addEntry("zanr",4,1)
 app.addLabel("l6", "Stopa:",5,0)
 app.addEntry("stopa",5,1)
 
+
+
 app.addLabel("l7", "Soubor:",6,0)
-app.addLabel("l8", "placeholder.mp3",6,1)
+app.addLabel("labelDisplay", "placeholder.mp3",6,1)
 
 app.addButton("Uložit", save,7,0)
 app.addButton("Načíst", load,7,1)
