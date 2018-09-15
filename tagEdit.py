@@ -66,7 +66,7 @@ app.addLabel("l3", "Interpret:",2,0)
 app.addEntry("interpret",2,1,2)
 
 app.addLabel("l4", "Rok:",3,0)
-app.addEntry("rok",3,1,2)
+app.addNumericEntry("rok",3,1,2)
 
 app.addLabel("l5", "Žánr:",4,0)
 app.addEntry("zanr",4,1,2)
