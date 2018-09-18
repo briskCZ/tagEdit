@@ -8,7 +8,7 @@ audio = None
 
 def changeTags(btn):
     input = app.getAllEntries()
-    print(input)
+
     if audio is not None:
         if input.get("skladba","") != "":#TIT2
             audio["TIT2"] = TIT2(encoding=3, text=input.get("skladba",""))
@@ -26,7 +26,12 @@ def changeTags(btn):
             audio["TCON"] = TCON(encoding=3, text=input.get("zanr",""))
         if input.get("stopa","") != "":#TRCK
             audio["TRCK"] = TRCK(encoding=3, text=input.get("stopa",""))
-        audio.save()
+        if input.get("fCover","") != "":#APIC
+            imagedata = open(input.get("fCover",""), 'rb').read()
+            audio.add(APIC(3, 'image/jpeg', 3, 'Front cover', imagedata))
+            
+        audio.save(v2_version=3)
+        print("Tags for: " + str(app.getLabel("labelDisplay")) + " succesfully saved.")
             
 
     
