@@ -9,16 +9,19 @@ import re
 audio = None
 
 fPaths = []
+loadedList = []
 
 def clearFiles(btn):        # deletes all files from the listbox
     global fPaths
     app.clearListBox("seznam", callFunction=False)
     fPaths.clear()
+    loadedList.clear()
     app.clearAllEntries(callFunction=False)
     app.setLabel("labelDisplay","Žádný soubor nevybrán.")  
        
 def editTags(btn):      # tags of selected files can be edited
     global audio
+    global loadedList
     chosenList = []
     for x in app.getListBox("seznam"):      #for each selected item
         i = app.getAllListItems("seznam").index(x)      #get index from list all items
@@ -44,9 +47,11 @@ def editTags(btn):      # tags of selected files can be edited
         if 'TRCK' in audio:
             app.setEntry("stopa", audio["TRCK"][0], callFunction=False)
             
+        loadedList.clear()
+            
     if len(chosenList) > 1:
         app.clearAllEntries(callFunction=False)
-        loadedList = []
+        #loadedList = []
         for x in chosenList:
             loadedList.append(ID3(x))
         
@@ -118,30 +123,58 @@ def addFile(btn):       # adds selected file/files to the listbox
 def saveTags(btn):        # saves tags to the file/files
     input = app.getAllEntries()
 
-    if audio is not None:
-        if input.get("skladba","") != "":#TIT2
-            audio["TIT2"] = TIT2(encoding=3, text=input.get("skladba",""))
-        if input.get("album","") != "":#TALB
-            audio["TALB"] = TALB(encoding=3, text=input.get("album",""))
-        if input.get("interpret","") != "":#TPE1
-            audio["TPE1"] = TPE1(encoding=3, text=input.get("interpret",""))
-        if input.get("rok","") != "":#TDRC
-            num = input.get("rok")
-            if len(num) == 4 and num.isnumeric():
-                audio["TDRC"] = TDRC(encoding=3, text=num)
-            else:
-                print("Wrong date format!")
-        if input.get("zanr","") != "":#TCON
-            audio["TCON"] = TCON(encoding=3, text=input.get("zanr",""))
-        if input.get("stopa","") != "":#TRCK
-            audio["TRCK"] = TRCK(encoding=3, text=input.get("stopa",""))
-        if input.get("fCover","") != "":#APIC
-            imagedata = open(input.get("fCover",""), 'rb').read()
-            audio.add(APIC(3, 'image/jpeg', 3, 'Front cover', imagedata))
-            
-        audio.save(v2_version=3)
-        print("Tags for: " + str(app.getLabel("labelDisplay")) + " succesfully saved.")
-            
+    if len(loadedList) == 0:
+        if audio is not None:
+                if input.get("skladba","") != "":#TIT2
+                    audio["TIT2"] = TIT2(encoding=3, text=input.get("skladba",""))
+                if input.get("album","") != "":#TALB
+                    audio["TALB"] = TALB(encoding=3, text=input.get("album",""))
+                if input.get("interpret","") != "":#TPE1
+                    audio["TPE1"] = TPE1(encoding=3, text=input.get("interpret",""))
+                if input.get("rok","") != "":#TDRC
+                    num = input.get("rok")
+                    if len(num) == 4 and num.isnumeric():
+                        audio["TDRC"] = TDRC(encoding=3, text=num)
+                    else:
+                        print("Wrong date format!")
+                if input.get("zanr","") != "":#TCON
+                    audio["TCON"] = TCON(encoding=3, text=input.get("zanr",""))
+                if input.get("stopa","") != "":#TRCK
+                    audio["TRCK"] = TRCK(encoding=3, text=input.get("stopa",""))
+                if input.get("fCover","") != "":#APIC
+                    imagedata = open(input.get("fCover",""), 'rb').read()
+                    audio.add(APIC(3, 'image/jpeg', 3, 'Front cover', imagedata))
+                    
+                audio.save(v2_version=3)
+                print("Tags for " + str(app.getLabel("labelDisplay")) +" succesfully saved.")
+    
+    if len(loadedList) > 0:
+        for multipleAudio in loadedList:
+            if multipleAudio is not None:
+                if input.get("skladba","") != "":#TIT2
+                    multipleAudio["TIT2"] = TIT2(encoding=3, text=input.get("skladba",""))
+                if input.get("album","") != "":#TALB
+                    multipleAudio["TALB"] = TALB(encoding=3, text=input.get("album",""))
+                if input.get("interpret","") != "":#TPE1
+                    multipleAudio["TPE1"] = TPE1(encoding=3, text=input.get("interpret",""))
+                if input.get("rok","") != "":#TDRC
+                    num = input.get("rok")
+                    if len(num) == 4 and num.isnumeric():
+                        multipleAudio["TDRC"] = TDRC(encoding=3, text=num)
+                    else:
+                        print("Wrong date format!")
+                if input.get("zanr","") != "":#TCON
+                    multipleAudio["TCON"] = TCON(encoding=3, text=input.get("zanr",""))
+                if input.get("stopa","") != "":#TRCK
+                    multipleAudio["TRCK"] = TRCK(encoding=3, text=input.get("stopa",""))
+                if input.get("fCover","") != "":#APIC
+                    imagedata = open(input.get("fCover",""), 'rb').read()
+                    multipleAudio.add(APIC(3, 'image/jpeg', 3, 'Front cover', imagedata))
+                    
+                multipleAudio.save(v2_version=3)
+                print("Tags for " + str(len(loadedList)) +" files succesfully saved.")
+
+                
 def load(btn):
     global audio
 
