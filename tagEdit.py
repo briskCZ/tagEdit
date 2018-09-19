@@ -11,10 +11,12 @@ audio = None
 fPaths = []
 loadedList = []
 
-def clearFiles(btn):        # deletes all files from the listbox
+def clearFiles(btn):        # deletes all files from the listbox and clear list and other variables used
     global fPaths
+    global audio
     app.clearListBox("seznam", callFunction=False)
     fPaths.clear()
+    audio = None
     loadedList.clear()
     app.clearAllEntries(callFunction=False)
     app.setLabel("labelDisplay","Žádný soubor nevybrán.")  
@@ -23,6 +25,9 @@ def editTags(btn):      # tags of selected files can be edited
     global audio
     global loadedList
     chosenList = []
+    
+    loadedList.clear()
+    
     for x in app.getListBox("seznam"):      #for each selected item
         i = app.getAllListItems("seznam").index(x)      #get index from list all items
         chosenList.append(fPaths[i])        #appends paths to selected files to chosenList
@@ -51,7 +56,6 @@ def editTags(btn):      # tags of selected files can be edited
             
     if len(chosenList) > 1:
         app.clearAllEntries(callFunction=False)
-        #loadedList = []
         for x in chosenList:
             loadedList.append(ID3(x))
         
@@ -172,34 +176,7 @@ def saveTags(btn):        # saves tags to the file/files
                     multipleAudio.add(APIC(3, 'image/jpeg', 3, 'Front cover', imagedata))
                     
                 multipleAudio.save(v2_version=3)
-                print("Tags for " + str(len(loadedList)) +" files succesfully saved.")
-
-                
-def load(btn):
-    global audio
-
-    if app.getEntry("f1")[-4:] == '.mp3': 
-        path = app.getEntry("f1")
-        filename = re.search('^.*[/](.+$)',path).group(1)       #regex returns the filename
-        app.setLabel("labelDisplay",filename)       #set the filename to the label that should display it
-        print("Loaded: " + str(path))
-        
-        audio = ID3(path)
-        
-        if 'TIT2' in audio:
-            app.setEntry("skladba", audio["TIT2"][0], callFunction=False)
-        if 'TALB' in audio:
-            app.setEntry("album", audio["TALB"][0], callFunction=False)
-        if 'TPE1' in audio:
-            app.setEntry("interpret", audio["TPE1"][0], callFunction=False)
-        if 'TDRC' in audio:
-            app.setEntry("rok", audio["TDRC"][0], callFunction=False)
-        if 'TCON' in audio:
-            app.setEntry("zanr", audio["TCON"][0], callFunction=False)
-        if 'TRCK' in audio:
-            app.setEntry("stopa", audio["TRCK"][0], callFunction=False)
-    else:
-        print("Wrong file, must be an *.mp3")
+        print("Tags for " + str(len(loadedList)) +" files succesfully saved.")
 
 app = gui("Tag editor")
 
