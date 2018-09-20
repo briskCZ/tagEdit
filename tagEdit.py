@@ -5,6 +5,7 @@
 from mutagen.id3 import ID3, APIC, TIT2, TALB, TPE1, TDRC, TCON,TRCK
 from appJar import gui
 import re
+import os
 
 audio = None
 
@@ -123,6 +124,17 @@ def addFile(btn):       # adds selected file/files to the listbox
             app.clearEntry("f1", callFunction=False)
     else:
         print("Wrong file, must be an *.mp3")
+    
+    folder = app.getEntry("f2")
+    
+    for file in os.listdir(folder):
+        if file[-4:] == '.mp3': 
+            fPath = folder + '/' + file
+            fName = file
+            if fName not in app.getListBox("seznam"):
+                app.addListItem("seznam", fName)
+                fPaths.append(fPath)
+            app.clearEntry("f2", callFunction=False)
         
 def saveTags(btn):        # saves tags to the file/files
     input = app.getAllEntries()
@@ -207,14 +219,15 @@ app.addLabel("labelDisplay", "Žádný soubor nevybrán.",7,1,3)
 app.addHorizontalSeparator(8,0,4, colour="black")
 
 app.addFileEntry("f1",9,0,4)
-app.addButton("Vymazat", clearFiles,10,0)
-app.addButton("Uložit", saveTags,10,1)
-app.addButton("Upravit", editTags,10,2)
-app.addButton("Načíst", addFile,10,3)
+app.addDirectoryEntry("f2",10,0,4)
+app.addButton("Vymazat", clearFiles,11,0)
+app.addButton("Uložit", saveTags,11,1)
+app.addButton("Upravit", editTags,11,2)
+app.addButton("Načíst", addFile,11,3)
 
-app.addHorizontalSeparator(11,0,4, colour="black")
+app.addHorizontalSeparator(12,0,4, colour="black")
 
-app.addListBox("seznam", [],12,0,4,4)
+app.addListBox("seznam", [],13,0,4,4)
 app.setListBoxMulti("seznam", multi=True)
 
 app.go()
