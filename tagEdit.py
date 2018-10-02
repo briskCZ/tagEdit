@@ -115,26 +115,32 @@ def editTags(btn):      # tags of selected files can be edited
     
 def addFile(btn):       # adds selected file/files to the listbox
     global fPaths
-    if app.getEntry("f1")[-4:] == '.mp3': 
-            fPath = app.getEntry("f1")
-            fName = re.search('^.*[/](.+$)',fPath).group(1) #regex returns the filename
-            if fName not in app.getListBox("seznam"):
-                app.addListItem("seznam", fName)
-                fPaths.append(fPath)
-            app.clearEntry("f1", callFunction=False)
+    if app.getEntry("f1") != "":
+        if app.getEntry("f1")[-4:] == '.mp3' :       # one selected file
+                fPath = app.getEntry("f1")
+                fName = re.search('^.*[/](.+$)',fPath).group(1) #regex returns the filename
+                if fName not in app.getListBox("seznam"):
+                    app.addListItem("seznam", fName)
+                    fPaths.append(fPath)
+                app.clearEntry("f1", callFunction=False)
+        else:
+            print("Wrong file, must be an *.mp3")
     else:
-        print("Wrong file, must be an *.mp3")
+        print("No file selected")
     
-    folder = app.getEntry("f2")
+    folder = app.getEntry("f2")     # all files from selected folder
     
-    for file in os.listdir(folder):
-        if file[-4:] == '.mp3': 
-            fPath = folder + '/' + file
-            fName = file
-            if fName not in app.getListBox("seznam"):
-                app.addListItem("seznam", fName)
-                fPaths.append(fPath)
-            app.clearEntry("f2", callFunction=False)
+    if folder != "":
+        for file in os.listdir(folder):
+            if file[-4:] == '.mp3': 
+                fPath = folder + '/' + file
+                fName = file
+                if fName not in app.getListBox("seznam"):
+                    app.addListItem("seznam", fName)
+                    fPaths.append(fPath)
+                app.clearEntry("f2", callFunction=False)
+    else:
+        print("No folder selected")
         
 def saveTags(btn):        # saves tags to the file/files
     input = app.getAllEntries()
